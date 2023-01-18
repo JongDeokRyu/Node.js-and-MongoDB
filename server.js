@@ -17,9 +17,12 @@ MongoClient.connect(
     }
     db = client.db("todoapp");
 
-    // db.collection('post').insertOne({ 이름: 'Deok', _id: 101 }, function (에러, 결과) {
-    //     console.log('저장완료');
-    // });
+    db.collection("post").insertOne(
+      { 이름: "Deok", _id: 101 },
+      function (에러, 결과) {
+        console.log("저장완료");
+      }
+    );
     app.listen(8080, function () {
       console.log("listening on 8080 ㅋㅋㅋㅋㅋㅋ");
     });
