@@ -68,13 +68,18 @@
 
     $('.delete').click(function (e) {
       var 글번호 = e.target.dataset.id;
+      var 지금누른거 = $(this);
       $.ajax({
         method: 'DELETE',
         url: '/delete',
         data: { _id: 글번호 }
       }).done(function (결과) {
+        console.log('ajax 성공했어요')
+        지금누른거.parent('li').fadeOut();
 
-      });
+      }).fail(function () {
+
+      })
     })
 
 
