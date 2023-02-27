@@ -23,6 +23,11 @@
 
     <div class="container">
       <h4 class="m1-2 my-3 text-center">서버에서 가져온 할 일 목록</h4>
+
+      <div class="container input-group mb-2">
+        <input class="form-control" id="search-input">
+        <button class="input-group-append btn btn-danger" id="search">검색</button>
+      </div>
       <ul class="list-group">
         <% for (var i=0 ; i < posts.length ; i ++){ %>
           <li class="list-group-item">
@@ -43,6 +48,11 @@
 
 
     <script>
+
+      $('#search').click(function (e) {
+        var 입력한값 = $('#search-input').val()
+        window.location.replace('/search?value=' + 입력한값)
+      })
 
       $('.delete').click(function (e) {
         var 글번호 = e.target.dataset.id;
