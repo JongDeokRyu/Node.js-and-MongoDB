@@ -234,3 +234,7 @@ app.delete("/delete", function (요청, 응답) {
     if (에러) console.log("*** 에러 *** ---> ", 에러);
   });
 });
+
+app.use("/shop", require("./routes/shop.js"));
+
+app.use("/board/sub", require("./routes/board.js"));
