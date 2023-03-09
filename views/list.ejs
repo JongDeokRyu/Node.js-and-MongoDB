@@ -38,6 +38,8 @@
             <p>할일 마감날짜 : <%= posts[i].날짜 %>
             </p>
             <button class="btn btn-danger delete" data-id="<%= posts[i]._id %>">삭제</button>
+            <button class="btn btn-secondary chat" data-id="<%= posts[i].작성자 %>">채팅하기</button>
+
           </li>
           <% } %>
 
@@ -48,6 +50,14 @@
 
 
     <script>
+
+      $('.chat').click(function (e) {
+        var _id = e.target.dataset.id;
+        $.post('/chatroom', { 당한사람id: _id })
+          .then(() => {
+            console.log('채팅방 게시물 생성완료')
+          })
+      });
 
       $('#search').click(function (e) {
         var 입력한값 = $('#search-input').val()

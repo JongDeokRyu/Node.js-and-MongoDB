@@ -275,6 +275,31 @@ app.get("/image/:imageName", function (요청, 응답) {
   응답.sendFile(__dirname + "/public/image/" + 요청.params.imageName);
 });
 
+app.get("/chat", function (요청, 응답) {
+  db.collection("chatroom")
+    .find({ member: 요청.user._id })
+    .toArray()
+    .then((결과) => {
+      응답.render("chat.ejs", { data: 결과 });
+    });
+});
+
+const { ObjectId } = require("mongodb");
+
+app.post("/chatroom", 로그인했니, function (요청, 응답) {
+  var 저장할거 = {
+    title: "무슨무슨채팅방",
+    member: [ObjectId(요청.body.당한사람id), 요청.user._id],
+    date: new Date(),
+  };
+
+  db.collection("chatroom")
+    .insertOne(저장할거)
+    .then(function (결과) {
+      응답.send("저장완료");
+    });
+});
+
 // app.post("/upload", upload.array("profile", 10), function (요청, 응답) {
 //   응답.send("업로드완료");
 // }); 복수
