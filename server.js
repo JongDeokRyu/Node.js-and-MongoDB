@@ -300,6 +300,37 @@ app.post("/chatroom", 로그인했니, function (요청, 응답) {
     });
 });
 
+app.post("/message", 로그인했니, function (요청, 응답) {
+  var 저장할거 = {
+    parent: 요청.body.parent,
+    content: 요청.body.content,
+    userid: 요청.user._id,
+    date: new Date(),
+  };
+
+  db.collection("message")
+    .insertOne(저장할거)
+    .then(() => {
+      console.log("DB저장성공");
+      응답.send("DB저장성공");
+    });
+});
+app.get("/message/:id", 로그인했니, function (요청, 응답) {
+  응답.writeHead(200, {
+    Connection: "keep-alive",
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+  });
+
+  db.collection("message")
+    .find({ parent: 요청.params.id })
+    .toArray()
+    .then((결과) => {
+      응답.write("event: test\n");
+      응답.write("data: " + JSON.stringify(결과) + "\n\n");
+    });
+});
+
 // app.post("/upload", upload.array("profile", 10), function (요청, 응답) {
 //   응답.send("업로드완료");
 // }); 복수

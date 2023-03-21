@@ -30,7 +30,7 @@
                     <ul class="list-group chat-list">
 
                         <% for ( let i=0; i <data.length; i++){ %>
-                            <li class="list-group-item" data-id="">
+                            <li class="list-group-item" data-id="<%= data[i]._id %>">
                                 <h6>
                                     <%= data[i].title %>
                                 </h6>
@@ -44,11 +44,7 @@
 
                 <div class="col-9 p-0">
                     <div class="chat-room">
-                        <ul class="list-group chat-content">
-                            <li><span class="chat-box">채팅방1 내용</span></li>
-                            <li><span class="chat-box">채팅방1 내용</span></li>
-                            <li><span class="chat-box mine">채팅방1 내용</span></li>
-                        </ul>
+
                         <div class="input-group">
                             <input class="form-control" id="chat-input">
                             <button class="btn btn-secondary" id="send">전송</button>
@@ -63,7 +59,31 @@
 
 
         <script>
+            var 지금누른채팅방id;
+            var eventSource;
 
+            $('.list-group-item').click(function () {
+                지금누른채팅방id = this.dataset.id;
+
+                eventSource = new EventSource('/message/' + 지금누른채팅방id)
+                eventSource.addEventListener('test', function (e) {
+                    console.log('e.data ---> ', JSON.parse(e.data))
+                });
+            })
+
+            $('#send').click(function () {
+                var 채팅내용 = $('#chat-input').val();   //1, 2
+                var 보낼거 = {
+                    parent: 지금누른채팅방id,
+                    content: 채팅내용,
+                };
+
+                //3
+                $.post('/message', 보낼거).then((a) => {
+                    console.log(a)
+                });
+
+            });
 
         </script>
 
