@@ -1,5 +1,10 @@
 const express = require("express");
 const app = express();
+
+const http = require("http").createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(http);
+
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 const MongoClient = require("mongodb").MongoClient;
@@ -21,11 +26,34 @@ MongoClient.connect(
     }
     db = client.db("todoapp");
 
-    app.listen(8080, function () {
+    http.listen(8080, function () {
       console.log("DB 접속");
     });
   }
 );
+
+app.get("/socket", function (요청, 응답) {
+  응답.render("socket.ejs");
+});
+
+io.on("connection", function (socket) {
+  console.log("web socket 접속됨");
+
+  socket.on("room1-send", function (data) {
+    io.to("room1").emit("broadcast", data);
+  });
+
+  socket.on("user-send", function (data) {
+    console.log(data);
+
+    io.emit("broadcast", data);
+    // io.to(socket.id).emit("broadcast", data);
+    //socket.id 지금 접속한 유저의 unique id
+  });
+  socket.on("joinroom", function (data) {
+    socket.join("room1");
+  });
+});
 
 app.get("/", function (요청, 응답) {
   응답.render("index.ejs");
@@ -329,6 +357,15 @@ app.get("/message/:id", 로그인했니, function (요청, 응답) {
       응답.write("event: test\n");
       응답.write("data: " + JSON.stringify(결과) + "\n\n");
     });
+
+  const pipeline = [{ $match: { "fullDocument.parent": 요청.params.id } }];
+  const collection = db.collection("message");
+  const changeStream = db.collection("message").watch(pipeline);
+
+  changeStream.on("change", (result) => {
+    응답.write("event: test\n");
+    응답.write("data: " + JSON.stringify([result.fullDocument]) + "\n\n");
+  });
 });
 
 // app.post("/upload", upload.array("profile", 10), function (요청, 응답) {
